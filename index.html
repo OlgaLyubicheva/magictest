@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="main.css">
+  <title>Registration form</title>
+</head>
+<body>
+  <form action="" class="registrForm" name="regist" method="POST">
+    <button type="button" class="close"></button>
+    <h1>Регистрация</h1>
+
+    <input type="text" name="name" placeholder="ФИО*" required>
+    <input type="text" name="email" placeholder="E-mail(Ваш логин)*" required data-rule="email">
+    <input
+      type="text"
+      name="phone"
+      placeholder="Телефон*"
+      title="Введите телефон в формате +38(033)333-33-33"
+      required
+      data-rule="phone"
+    >
+    <input type="text" name="country" placeholder="Страна*" required>
+    <input
+      type="text"
+      name="birthday"
+      placeholder="Дата рождения"
+      title="Введите дату в формате дд.мм.гг"
+      data-rule="date"
+    >
+    <input type="password" name="password" placeholder="Пароль*" required data-rule="pas">
+    <input type="password" placeholder="Повторить пароль*" required>
+
+    <button type="submit" class="btn">Зарегистрироваться</button>
+  </form>
+
+  <script>
+    document.regist.addEventListener('submit', validator);
+
+    const rules = {
+      // required: (el) => (el.value != ''),
+      email: (el) => /^\w{1,}@\w{1,}\.\w{2,}$/.test(el.value),
+      phone:(el) => /^\+38\(0\d\d\)\d{3}-\d{2}-\d{2}$/.test(el.value),
+      date: (el) => /^\d\d\.\d\d\.\d\d$/.test(el.value),
+      pas: (el) => {
+        return el.value === el.nextElementSibling.value
+      },
+    };
+
+    function showErrors(el) {
+      if (el[0].classList.contains('error')) {
+        if(el[1] == '') {
+          el[0].classList.remove('error');
+        }
+      } else {
+        el[1] !== '' && el[0].classList.add(el[1]);
+      }
+    };
+
+    function validator (e) {
+      const inputs = [...this.elements].filter(element => element.dataset.rule);
+      const states = inputs.map(item => (
+        rules[item.dataset.rule](item) ? [item, ''] : [item, 'error']
+      ));
+
+      states.map(item => showErrors(item));
+
+      if (states.filter(item => item[1] !== '').length > 0) {
+        e.preventDefault();
+      }
+    }
+  </script>
+</body>
+</html>
